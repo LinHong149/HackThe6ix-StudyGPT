@@ -24,8 +24,8 @@
   },
   "contributors": [],
   "scripts": {
-    "build": "tsc",
-    "start": "node ./dist/app.js",
+    "build": "next build",
+    "start": "next start",
     "dev": "next dev"
   },
   "dependencies": {
