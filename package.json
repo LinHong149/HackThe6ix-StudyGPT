@@ -26,7 +26,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./dist/app.js",
-    "dev": "ts-node --esm ./src/app.ts"
+    "dev": "next dev"
   },
   "dependencies": {
     "@types/node": "^20.5.1",
