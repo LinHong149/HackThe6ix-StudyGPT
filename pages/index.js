@@ -14,11 +14,13 @@ dotenv.config();
 
 export default function Home() {
   const [fileContent, setFileContent] = useState("");
+  const [inputField, setInputField] = useState("");
   const [userPrompt, setUserPrompt] = useState("");
   // returns fileName with all the names of selected files
   const [fileNames, setFileNames] = useState([]);
   const [messages, setMessages] = useState([]);
   const [lastTypewriterIndex, setLastTypewriterIndex] = useState(-1);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDelete = (indexToRemove) => {
     setFileNames(prevNames => prevNames.filter((_, index) => index !== indexToRemove));
@@ -50,6 +52,9 @@ export default function Home() {
   const runAI = async () => {
     // Push user's message
     setMessages(prevMessages => [...prevMessages, { sender: 'user', content: userPrompt }]);
+    setUserPrompt(inputField); // Store the user's message
+    setInputField(""); // Clear the input field
+    setIsLoading(true); // Start the loading indicator
 
     //Instantiante the OpenAI model 
     //Pass the "temperature" parameter which controls the RANDOMNESS of the model's output. A lower temperature will result in more predictable output, while a higher temperature will result in more random output. The temperature parameter is set between 0 and 1, with 0 being the most predictable and 1 being the most random
@@ -65,9 +70,8 @@ export default function Home() {
     console.log({ res });
     setMessages(prevMessages => [...prevMessages, { sender: 'ai', content: res }]);
     setLastTypewriterIndex(messages.length);  // Store the index of the AI's message
-    // console.log("Pretend you are an experienced tutor, well versed in all subjects. A student comes to you for help. This is the documents that they provide: \n"
-    // + fileContent + "\n"
-    // + userPrompt)
+
+    setIsLoading(false); // Stop the loading indicator after receiving the response
   };
 
   const UserOutput = ({ content }) => {
@@ -117,17 +121,19 @@ export default function Home() {
             />
           </div>
           <input 
-              className={styles.inputText} 
+              className={isLoading ? `${styles.inputText} ${styles.inputTextDisabled}` : styles.inputText} 
               type="text" 
-              placeholder='Send a message'
-              value={userPrompt}  // bind the value to the state
-              onChange={e => setUserPrompt(e.target.value)} // update state on input change
+              placeholder={isLoading ? 'Loading...' : 'Send a message'}
+              value={inputField}
+              onChange={e => setInputField(e.target.value)}
               onKeyPress={e => {
-                  if (e.key === 'Enter') {
-                      runAI(); // optionally, you can also run the AI when Enter is pressed
+                  if (e.key === 'Enter' && !isLoading) {
+                      runAI();
                   }
               }}
+              disabled={isLoading}  // This will disable the input box while loading
           />
+
           <button className={styles.inputSubmit} onClick={pressedSubmit}><FontAwesomeIcon icon={faPaperPlane} /></button>
         </div>
 
