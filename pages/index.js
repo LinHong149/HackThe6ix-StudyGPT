@@ -1,24 +1,45 @@
 import styles from '../styles/Home.module.css';
 import { OpenAI } from "langchain/llms/openai";
+import React, { useState } from 'react';
 
 import * as dotenv from "dotenv";
 dotenv.config();
 
 
-export const run = async () => {
+export default function Home() {
+  const [fileContent, setFileContent] = useState("");
+  const [userPrompt, setUserPrompt] = useState("");
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const content = e.target.result;
+            setFileContent(content);  // Setting the content to state so that you can display it later
+        };
+        reader.readAsText(file);
+    }
+  }
+
+  const runAI = async () => {
     //Instantiante the OpenAI model 
     //Pass the "temperature" parameter which controls the RANDOMNESS of the model's output. A lower temperature will result in more predictable output, while a higher temperature will result in more random output. The temperature parameter is set between 0 and 1, with 0 being the most predictable and 1 being the most random
     const model = new OpenAI({ temperature: 0.9, openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
 
     //Calls out to the model's (OpenAI's) endpoint passing the prompt. This call returns a string
-    const res = await model.call(
-        "What would be a good company name a company that makes colorful socks?"
-    );
-    console.log({ res });
-};
+    // const res = await model.call(
+    //   "Pretend you are an experienced tutor, well versed in all subjects. A student comes to you for help. This is the documents that they provide: \n"
+    //   + fileContent + "\n"
+    //   + userPrompt
+    // );
+    // console.log({ res });
 
+    console.log("Pretend you are an experienced tutor, well versed in all subjects. A student comes to you for help. This is the documents that they provide: \n"
+    + fileContent + "\n"
+    + userPrompt)
+  };
 
-export default function Home() {
   const UserOutput = () => {
     return (
       <div className={styles.OutputStyle}>
@@ -37,6 +58,8 @@ export default function Home() {
     )
   };
 
+  
+
   return (
     <div className={styles.container}>
       <div className={styles.output}>
@@ -52,17 +75,37 @@ export default function Home() {
         <GPTOutput/>
       </div>
 
+      <div>{fileContent}</div>
+
 
       <div className={styles.bottomBg}>
         <div className={styles.inputGroup}>
           <div>
             {/* <label for="files" class="btn">Select Image</label> */}
-            <button className={styles.inputFile}  onClick="document.getElementById('getFile').click()"></button>
-            <input className={styles.inputFileInput} id="getFile" type="file" style={{display: "none"}}></input>
+            <button className={styles.inputFile} onClick={() => document.getElementById('getFile').click()}></button>
+            <input 
+                className={styles.inputFileInput} 
+                id="getFile" 
+                type="file" 
+                style={{display: "none"}}
+                onChange={handleFileChange}
+            />
           </div>
-          <input className={styles.inputText} type="text" placeholder='Send a message'></input>
+          <input 
+              className={styles.inputText} 
+              type="text" 
+              placeholder='Send a message'
+              value={userPrompt}  // bind the value to the state
+              onChange={e => setUserPrompt(e.target.value)} // update state on input change
+              onKeyPress={e => {
+                  if (e.key === 'Enter') {
+                      runAI(); // optionally, you can also run the AI when Enter is pressed
+                  }
+              }}
+          />
+
         </div>
-        <button onClick={run}>Click Me</button>
+        <button onClick={runAI}>Click Me</button>
 
       </div>
 
