@@ -1,6 +1,7 @@
 import styles from '../styles/Home.module.css';
 import { OpenAI } from "langchain/llms/openai";
 import React, { useState } from 'react';
+import TypewriterEffect from '../components/TypewriterEffect';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
@@ -17,6 +18,7 @@ export default function Home() {
   // returns fileName with all the names of selected files
   const [fileNames, setFileNames] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [lastTypewriterIndex, setLastTypewriterIndex] = useState(-1);
 
   const handleDelete = (indexToRemove) => {
     setFileNames(prevNames => prevNames.filter((_, index) => index !== indexToRemove));
@@ -53,7 +55,7 @@ export default function Home() {
 
     console.log({ res });
     setMessages(prevMessages => [...prevMessages, { sender: 'ai', content: res }]);
-
+    setLastTypewriterIndex(messages.length);  // Store the index of the AI's message
     // console.log("Pretend you are an experienced tutor, well versed in all subjects. A student comes to you for help. This is the documents that they provide: \n"
     // + fileContent + "\n"
     // + userPrompt)
@@ -68,24 +70,27 @@ export default function Home() {
     )
   };
 
-  const GPTOutput = ({ content }) => {
-      return (
-        <div className={styles.OutputStyle}>
+  const GPTOutput = ({ content, index }) => {
+    return (
+      <div className={styles.OutputStyle}>
           <div className={styles.gptOutputAvatar}></div>
-          <div className={styles.gptOutputText}>{content}</div>
-        </div>
-      )
+          <div className={styles.gptOutputText}>
+            {index === lastTypewriterIndex ? <TypewriterEffect initialMessage={content} /> : content}
+          </div>
+      </div>
+    )
   };
+ 
 
 
   return (
     <div className={styles.container}>
       <div className={styles.output}>
-          {messages.map((message, index) => (
-              message.sender === 'user' ? 
-              <UserOutput key={index} content={message.content}/> : 
-              <GPTOutput key={index} content={message.content}/>
-          ))}
+        {messages.map((message, index) => (
+            message.sender === 'user' ? 
+            <UserOutput key={index} content={message.content}/> : 
+            <GPTOutput key={index} content={message.content} index={index} />
+        ))}
       </div>
 
       <div className={styles.bottomBg}>
