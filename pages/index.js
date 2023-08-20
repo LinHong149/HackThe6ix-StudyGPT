@@ -28,7 +28,7 @@ export default function Home() {
 
   const pressedSubmit = () => {
     clearAllFileNames();
-    runAI(inputField);
+    runAI();
   }
 
   const handleFileChange = (event) => {
@@ -62,9 +62,9 @@ export default function Home() {
 
     //Calls out to the model's (OpenAI's) endpoint passing the prompt. This call returns a string
     const res = await model.call(
-      "Pretend you are an experienced tutor, well versed in all subjects. A student comes to you for help. This is the documents that they provide: \n"
+      "Pretend you are an experienced tutor. You love helping students, and your explanations are top notch, explaining every detail. When a student asks you a question, you always give a long and through explanation of why the answer is what it is. A student comes to you for help. This is the documents that they provide: \n"
       + fileContent + "\n"
-      + userPrompt
+      + prompt
     );
 
     console.log({ res });
