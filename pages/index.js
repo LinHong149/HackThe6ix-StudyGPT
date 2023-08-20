@@ -1,8 +1,26 @@
 import styles from '../styles/Home.module.css';
 import { OpenAI } from "langchain/llms/openai";
+import { useState } from 'react';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 
 export default function Home() {
+  // returns fileName with all the names of selected files
+  const [fileNames, setFileNames] = useState([]);
+
+  // Handler for file selection
+  const handleFileChange = (event) => {
+    const newNames = Array.from(event.target.files).map(file => file.name);
+    setFileNames(prevNames => [...prevNames, ...newNames]);
+  };
+  const handleDelete = (indexToRemove) => {
+    setFileNames(prevNames => prevNames.filter((_, index) => index !== indexToRemove));
+  };
+
   const UserOutput = () => {
     return (
       <div className={styles.OutputStyle}>
@@ -38,13 +56,28 @@ export default function Home() {
 
 
       <div className={styles.bottomBg}>
-        <div className={styles.inputGroup}>
-          <div>
-            {/* <label for="files" class="btn">Select Image</label> */}
-            <button className={styles.inputFile}  onclick="document.getElementById('getFile').click()"></button>
-            <input className={styles.inputFileInput} id="getFile" type="file" style="display:none"></input>
-          </div>
+      <div className={styles.inputGroup}>
+          <input 
+            type="file" 
+            id="file" 
+            accept='image/*' 
+            className={styles.inputFile} 
+            onChange={handleFileChange} // Add this to handle file selection
+            multiple // Add this to allow selection of multiple files
+          />
+          <label className={styles.fileLabel} htmlFor="file"><FontAwesomeIcon icon={faPlus} /></label>
           <input className={styles.inputText} type="text" placeholder='Send a message'></input>
+          <button className={styles.inputSubmit}><FontAwesomeIcon icon={faPaperPlane} /></button>
+        </div>
+
+
+        <div className={styles.showFiles}>
+            {fileNames.map((name, index) => (
+                <div className={styles.attachedFile} key={name + index} style={{ display: 'flex', alignItems: 'center' }}>
+                    <span className={styles.attachedFileName}>{name}</span>
+                    <button className={styles.deleteFile} onClick={() => handleDelete(index)} style={{ marginLeft: '10px' }}><FontAwesomeIcon icon={faXmark} /></button>
+                </div>
+            ))}
         </div>
       </div>
 
