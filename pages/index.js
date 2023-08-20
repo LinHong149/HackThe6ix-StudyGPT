@@ -24,6 +24,11 @@ export default function Home() {
     setFileNames(prevNames => prevNames.filter((_, index) => index !== indexToRemove));
   };
 
+  const pressedSubmit = () => {
+    clearAllFileNames();
+    runAI();
+  }
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     const newNames = Array.from(event.target.files).map(file => file.name);
@@ -37,6 +42,10 @@ export default function Home() {
         reader.readAsText(file);
     }
   }
+  const clearAllFileNames = () => {
+    setFileNames([]);
+  };
+
 
   const runAI = async () => {
     // Push user's message
@@ -119,9 +128,8 @@ export default function Home() {
                   }
               }}
           />
-          <button className={styles.inputSubmit} onClick={runAI}>
-              <FontAwesomeIcon icon={faPaperPlane} />
-          </button>
+          <button className={styles.inputSubmit} onClick={pressedSubmit}><FontAwesomeIcon icon={faPaperPlane} /></button>
+        </div>
 
         <div className={styles.showFiles}>
             {fileNames.map((name, index) => (
@@ -132,8 +140,9 @@ export default function Home() {
             ))}
         </div>
 
-      </div>
       </div>  
+
+      
       <style jsx>{`
         main {
           padding: 5rem 0;
