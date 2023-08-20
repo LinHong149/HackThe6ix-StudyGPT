@@ -1,6 +1,6 @@
 import styles from '../styles/Home.module.css';
 import { OpenAI } from "langchain/llms/openai";
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
@@ -11,30 +11,46 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 
-export const run = async () => {
+export default function Home() {
+  const [fileContent, setFileContent] = useState("");
+  const [userPrompt, setUserPrompt] = useState("");
+  // returns fileName with all the names of selected files
+  const [fileNames, setFileNames] = useState([]);
+
+  const handleDelete = (indexToRemove) => {
+    setFileNames(prevNames => prevNames.filter((_, index) => index !== indexToRemove));
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    const newNames = Array.from(event.target.files).map(file => file.name);
+    setFileNames(prevNames => [...prevNames, ...newNames]);
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const content = e.target.result;
+            setFileContent(content);  // Setting the content to state so that you can display it later
+        };
+        reader.readAsText(file);
+    }
+  }
+
+  const runAI = async () => {
     //Instantiante the OpenAI model 
     //Pass the "temperature" parameter which controls the RANDOMNESS of the model's output. A lower temperature will result in more predictable output, while a higher temperature will result in more random output. The temperature parameter is set between 0 and 1, with 0 being the most predictable and 1 being the most random
     const model = new OpenAI({ temperature: 0.9, openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
 
     //Calls out to the model's (OpenAI's) endpoint passing the prompt. This call returns a string
-    const res = await model.call(
-        "What would be a good company name a company that makes colorful socks?"
-    );
-    console.log({ res });
-};
+    // const res = await model.call(
+    //   "Pretend you are an experienced tutor, well versed in all subjects. A student comes to you for help. This is the documents that they provide: \n"
+    //   + fileContent + "\n"
+    //   + userPrompt
+    // );
+    // console.log({ res });
 
-
-export default function Home() {
-  // returns fileName with all the names of selected files
-  const [fileNames, setFileNames] = useState([]);
-
-  // Handler for file selection
-  const handleFileChange = (event) => {
-    const newNames = Array.from(event.target.files).map(file => file.name);
-    setFileNames(prevNames => [...prevNames, ...newNames]);
-  };
-  const handleDelete = (indexToRemove) => {
-    setFileNames(prevNames => prevNames.filter((_, index) => index !== indexToRemove));
+    console.log("Pretend you are an experienced tutor, well versed in all subjects. A student comes to you for help. This is the documents that they provide: \n"
+    + fileContent + "\n"
+    + userPrompt)
   };
 
   const UserOutput = () => {
@@ -70,21 +86,36 @@ export default function Home() {
         <GPTOutput/>
       </div>
 
+      <div>{fileContent}</div>
+
 
       <div className={styles.bottomBg}>
-      <div className={styles.inputGroup}>
+        <div className={styles.inputGroup}>
+          <div>
+            {/* <label for="files" class="btn">Select Image</label> */}
+            <button className={styles.inputFile} onClick={() => document.getElementById('getFile').click()}></button>
+            <label className={styles.fileLabel} htmlFor="file"><FontAwesomeIcon icon={faPlus} /></label>
+            <input 
+              type="file" 
+              id="file" 
+              className={styles.inputFile} 
+              onChange={handleFileChange} // Add this to handle file selection
+              multiple // Add this to allow selection of multiple files
+            />
+          </div>
           <input 
-            type="file" 
-            id="file" 
-            accept='image/*' 
-            className={styles.inputFile} 
-            onChange={handleFileChange} // Add this to handle file selection
-            multiple // Add this to allow selection of multiple files
+              className={styles.inputText} 
+              type="text" 
+              placeholder='Send a message'
+              value={userPrompt}  // bind the value to the state
+              onChange={e => setUserPrompt(e.target.value)} // update state on input change
+              onKeyPress={e => {
+                  if (e.key === 'Enter') {
+                      runAI(); // optionally, you can also run the AI when Enter is pressed
+                  }
+              }}
           />
-          <label className={styles.fileLabel} htmlFor="file"><FontAwesomeIcon icon={faPlus} /></label>
-          <input className={styles.inputText} type="text" placeholder='Send a message'></input>
           <button className={styles.inputSubmit}><FontAwesomeIcon icon={faPaperPlane} /></button>
-        </div>
 
 
         <div className={styles.showFiles}>
@@ -95,10 +126,9 @@ export default function Home() {
                 </div>
             ))}
         </div>
-        <button onClick={run}>Click Me</button>
 
       </div>
-
+      </div>  
       <style jsx>{`
         main {
           padding: 5rem 0;
@@ -147,7 +177,5 @@ export default function Home() {
         }
       `}</style>
     </div>
-
-
   )
 }
