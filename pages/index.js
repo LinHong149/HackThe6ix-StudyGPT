@@ -34,6 +34,10 @@ export default function Home() {
         reader.readAsText(file);
     }
   }
+  const clearAllFileNames = () => {
+    setFileNames([]);
+  };
+
 
   const runAI = async () => {
     //Instantiante the OpenAI model 
@@ -115,7 +119,7 @@ export default function Home() {
                   }
               }}
           />
-          <button className={styles.inputSubmit}><FontAwesomeIcon icon={faPaperPlane} /></button>
+          <button className={styles.inputSubmit} onClick={clearAllFileNames}><FontAwesomeIcon icon={faPaperPlane} /></button>
 
 
         <div className={styles.showFiles}>
