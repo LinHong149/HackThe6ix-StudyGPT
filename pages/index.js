@@ -28,7 +28,7 @@ export default function Home() {
 
   const pressedSubmit = () => {
     clearAllFileNames();
-    runAI();
+    runAI(inputField);
   }
 
   const handleFileChange = (event) => {
@@ -49,10 +49,10 @@ export default function Home() {
   };
 
 
-  const runAI = async () => {
+  const runAI = async (prompt) => {
     // Push user's message
-    setMessages(prevMessages => [...prevMessages, { sender: 'user', content: userPrompt }]);
-    setUserPrompt(inputField); // Store the user's message
+    setMessages(prevMessages => [...prevMessages, { sender: 'user', content: prompt }]);
+    setUserPrompt(prompt); // Store the user's message
     setInputField(""); // Clear the input field
     setIsLoading(true); // Start the loading indicator
 
@@ -107,6 +107,20 @@ export default function Home() {
       </div>
 
       <div className={styles.bottomBg}>
+        <div className={styles.suggestionsContainer}>
+          <button className={styles.suggestion} onClick={() => runAI("Walk me through the questions I got wrong.")}>
+            <div className={styles.suggestionText}>Walk me through the questions I got wrong.</div>
+            <FontAwesomeIcon icon={faPaperPlane} />
+          </button>
+
+          <button className={styles.suggestion} onClick={() => runAI("Generate a mock exam for me.")}>
+            <div className={styles.suggestionText}>Generate a mock exam for me.</div>
+            <FontAwesomeIcon icon={faPaperPlane} />
+          </button>
+
+        </div>
+        
+
         <div className={styles.inputGroup}>
           <div>
             {/* <label for="files" class="btn">Select Image</label> */}

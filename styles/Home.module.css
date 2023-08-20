@@ -16,7 +16,7 @@
   margin: 0 100px;
   flex-grow: 1;
   height: 100%;
-  padding: 80px 0 40% 0;
+  padding: 80px 0 13% 0;
   flex-direction: column;
   gap: 80px;
   overflow: scroll;
@@ -75,7 +75,7 @@
 
 .bottomBg {
   width: 100%;
-  height: 20%; 
+  height: 25%; 
   max-height: 300px;
   padding-top: 2%;
   position: absolute;
@@ -149,6 +149,10 @@
   color: #2C2C2C;
 }
 
+.inputSubmit:hover {
+  cursor: pointer;
+}
+
 .showFiles {
   display: flex;
   padding: 0 100px;
@@ -168,6 +172,35 @@
   font-size: 18px;
 }
 
+.suggestionsContainer {
+  display: flex;
+  flex-direction: row;
+  padding: 0 100px;
+  gap: 10px;
+}
+
+.suggestion {
+  display: flex;
+  flex-direction: row;
+  background: linear-gradient(180deg, rgba(250, 250, 250, 0.20) 0%, #F9F9F9 80.11%);
+  border: none;
+  border-radius: 4px;
+  height: 40px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.suggestion:hover {
+  background: linear-gradient(180deg, rgba(200, 200, 200, 0.90) 0%, #E0E0E0 100%); /* Much darker gradient on hover */
+}
+
+
+.suggestionText {
+  font-size: 18px;
+  padding-right: 8px;
+}
+
 .deleteFile {
   border: none;
   background: none;
@@ -178,4 +211,5 @@
 .inputTextDisabled {
   background-color: #f2f2f2;
   color: #c0c0c0;
+  outline: none;
 }
