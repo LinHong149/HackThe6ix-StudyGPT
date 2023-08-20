@@ -127,8 +127,8 @@ export default function Home() {
               value={inputField}
               onChange={e => setInputField(e.target.value)}
               onKeyPress={e => {
-                  if (e.key === 'Enter' && !isLoading) {
-                      runAI();
+                  if (e.key === 'Enter') {
+                    pressedSubmit(); // optionally, you can also run the AI when Enter is pressed
                   }
               }}
               disabled={isLoading}  // This will disable the input box while loading
