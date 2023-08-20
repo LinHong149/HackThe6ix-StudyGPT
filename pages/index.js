@@ -57,15 +57,14 @@ export default function Home() {
         <div className={styles.inputGroup}>
           <div>
             {/* <label for="files" class="btn">Select Image</label> */}
-            <button className={styles.inputFile}  onclick="document.getElementById('getFile').click()"></button>
-            <input className={styles.inputFileInput} id="getFile" type="file" style="display:none"></input>
+            <button className={styles.inputFile}  onClick="document.getElementById('getFile').click()"></button>
+            <input className={styles.inputFileInput} id="getFile" type="file" style={{display: "none"}}></input>
           </div>
           <input className={styles.inputText} type="text" placeholder='Send a message'></input>
         </div>
         <button onClick={run}>Click Me</button>
 
-      </main>
-
+      </div>
 
       <style jsx>{`
         main {
