@@ -124,7 +124,7 @@ export default function Home() {
               onChange={e => setUserPrompt(e.target.value)} // update state on input change
               onKeyPress={e => {
                   if (e.key === 'Enter') {
-                      runAI(); // optionally, you can also run the AI when Enter is pressed
+                    pressedSubmit(); // optionally, you can also run the AI when Enter is pressed
                   }
               }}
           />
