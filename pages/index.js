@@ -16,10 +16,16 @@ export default function Home() {
   const [userPrompt, setUserPrompt] = useState("");
   // returns fileName with all the names of selected files
   const [fileNames, setFileNames] = useState([]);
+  const [messages, setMessages] = useState([]);
 
   const handleDelete = (indexToRemove) => {
     setFileNames(prevNames => prevNames.filter((_, index) => index !== indexToRemove));
   };
+
+  const pressedSubmit = () => {
+    clearAllFileNames();
+    runAI();
+  }
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -40,58 +46,56 @@ export default function Home() {
 
 
   const runAI = async () => {
+    // Push user's message
+    setMessages(prevMessages => [...prevMessages, { sender: 'user', content: userPrompt }]);
+
     //Instantiante the OpenAI model 
     //Pass the "temperature" parameter which controls the RANDOMNESS of the model's output. A lower temperature will result in more predictable output, while a higher temperature will result in more random output. The temperature parameter is set between 0 and 1, with 0 being the most predictable and 1 being the most random
-    const model = new OpenAI({ temperature: 0.9, openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
+    const model = new OpenAI({ temperature: 0.7, openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
 
     //Calls out to the model's (OpenAI's) endpoint passing the prompt. This call returns a string
-    // const res = await model.call(
-    //   "Pretend you are an experienced tutor, well versed in all subjects. A student comes to you for help. This is the documents that they provide: \n"
-    //   + fileContent + "\n"
-    //   + userPrompt
-    // );
-    // console.log({ res });
+    const res = await model.call(
+      "Pretend you are an experienced tutor, well versed in all subjects. A student comes to you for help. This is the documents that they provide: \n"
+      + fileContent + "\n"
+      + userPrompt
+    );
 
-    console.log("Pretend you are an experienced tutor, well versed in all subjects. A student comes to you for help. This is the documents that they provide: \n"
-    + fileContent + "\n"
-    + userPrompt)
+    console.log({ res });
+    setMessages(prevMessages => [...prevMessages, { sender: 'ai', content: res }]);
+
+    // console.log("Pretend you are an experienced tutor, well versed in all subjects. A student comes to you for help. This is the documents that they provide: \n"
+    // + fileContent + "\n"
+    // + userPrompt)
   };
 
-  const UserOutput = () => {
+  const UserOutput = ({ content }) => {
     return (
       <div className={styles.OutputStyle}>
         <div className={styles.userOutputAvatar}></div>
-        <div className={styles.userOutputText}>Lorem ipsum dolor sit amet consectetur. Est nunc facilisis commodo in viverra. Quisque ante sit fusce id purus. Mauris mauris sagittis neque vitae convallis aliquet dolor libero vitae. Convallis amet odio in aenean fames porttitor porttitor at. </div>
+        <div className={styles.userOutputText}>{content}</div>
       </div>
     )
   };
 
-  const GPTOutput = () => {
-    return (
-      <div className={styles.OutputStyle}>
-        <div className={styles.gptOutputAvatar}></div>
-        <div className={styles.gptOutputText}>Lorem ipsum dolor sit amet consectetur. Est nunc facilisis commodo in viverra. Quisque ante sit fusce id purus. Mauris mauris sagittis neque vitae convallis aliquet dolor libero vitae. Convallis amet odio in aenean fames porttitor porttitor at. </div>
-      </div>
-    )
+  const GPTOutput = ({ content }) => {
+      return (
+        <div className={styles.OutputStyle}>
+          <div className={styles.gptOutputAvatar}></div>
+          <div className={styles.gptOutputText}>{content}</div>
+        </div>
+      )
   };
+
 
   return (
     <div className={styles.container}>
       <div className={styles.output}>
-        <UserOutput/>
-        <GPTOutput/>
-        <UserOutput/>
-        <GPTOutput/>
-        <UserOutput/>
-        <GPTOutput/>
-        <UserOutput/>
-        <GPTOutput/>
-        <UserOutput/>
-        <GPTOutput/>
+          {messages.map((message, index) => (
+              message.sender === 'user' ? 
+              <UserOutput key={index} content={message.content}/> : 
+              <GPTOutput key={index} content={message.content}/>
+          ))}
       </div>
-
-      <div>{fileContent}</div>
-
 
       <div className={styles.bottomBg}>
         <div className={styles.inputGroup}>
@@ -119,8 +123,8 @@ export default function Home() {
                   }
               }}
           />
-          <button className={styles.inputSubmit} onClick={clearAllFileNames}><FontAwesomeIcon icon={faPaperPlane} /></button>
-
+          <button className={styles.inputSubmit} onClick={pressedSubmit}><FontAwesomeIcon icon={faPaperPlane} /></button>
+        </div>
 
         <div className={styles.showFiles}>
             {fileNames.map((name, index) => (
@@ -131,8 +135,9 @@ export default function Home() {
             ))}
         </div>
 
-      </div>
       </div>  
+
+      
       <style jsx>{`
         main {
           padding: 5rem 0;
