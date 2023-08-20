@@ -81,6 +81,9 @@
   padding-top: 2%;
   position: absolute;
   bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   background: rgba(255, 255, 255, 0.01);
   backdrop-filter: blur(40px);
 }
@@ -91,7 +94,7 @@
   margin: 0 100px;
 }
 
-.inputFile {
+/* .inputFile {
   display: block;
   width: 80px;
   height: 80px;
@@ -105,6 +108,57 @@
   border-radius: 20px;
   background: linear-gradient(180deg, rgba(250, 250, 250, 0.20) 0%, #F9F9F9 80.11%);  
 }
+ */
+
+.inputFile {
+  display: none;
+}
+.fileLabel {
+  display: flex;
+  padding-left: auto;
+  padding-right: auto;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  width: 80px;
+  height: 80px;
+  max-height: 80px;
+  overflow: hidden;
+  border: none;
+  color: #2C2C2C;
+  cursor: pointer;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(250, 250, 250, 0.20) 0%, #F9F9F9 80.11%);  
+}
+
+/* 
+.fileUploadWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+#file-upload {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.uploadLabel {
+  padding: 10px 15px;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+} */
+
+
 
 .inputText {
   display: flex;
@@ -124,6 +178,41 @@
   font-style: normal;
   font-weight: 400;
   line-height: 36px; /* 180% */
+}
+
+.inputSubmit {
+  border: none;
+  border-radius: 20px;
+  height: 80px;
+  min-width: 80px;
+  background: linear-gradient(180deg, rgba(250, 250, 250, 0.20) 0%, #F9F9F9 80.11%);
+  font-size: 20px;
+  color: #2C2C2C;
+}
+
+.showFiles {
+  display: flex;
+  /* border: 1px solid red; */
+  padding: 0 100px;
+  gap: 10px;
+}
+
+.attachedFile {
+  background: linear-gradient(180deg, rgba(250, 250, 250, 0.20) 0%, #F9F9F9 80.11%);
+  border-radius: 4px;
+  height: 40px;
+  padding: 20px 20px;
+}
+
+.attachedFileName {
+  font-size: 18px;
+}
+
+.deleteFile {
+  border: none;
+  background: none;
+  columns: white;
+  font-size: 14px;
 }
 
 

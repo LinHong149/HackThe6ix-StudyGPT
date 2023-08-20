@@ -1,28 +1,17 @@
 import styles from '../styles/Home.module.css';
 import { OpenAI } from "langchain/llms/openai";
-import React, { useState } from 'react';
+import { useState } from 'react';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 import * as dotenv from "dotenv";
 dotenv.config();
 
 
-export default function Home() {
-  const [fileContent, setFileContent] = useState("");
-  const [userPrompt, setUserPrompt] = useState("");
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const content = e.target.result;
-            setFileContent(content);  // Setting the content to state so that you can display it later
-        };
-        reader.readAsText(file);
-    }
-  }
-
-  const runAI = async () => {
+export const run = async () => {
     //Instantiante the OpenAI model 
     //Pass the "temperature" parameter which controls the RANDOMNESS of the model's output. A lower temperature will result in more predictable output, while a higher temperature will result in more random output. The temperature parameter is set between 0 and 1, with 0 being the most predictable and 1 being the most random
     const model = new OpenAI({ temperature: 0.9, openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
@@ -58,8 +47,6 @@ export default function Home() {
     )
   };
 
-  
-
   return (
     <div className={styles.container}>
       <div className={styles.output}>
@@ -79,6 +66,28 @@ export default function Home() {
 
 
       <div className={styles.bottomBg}>
+      <div className={styles.inputGroup}>
+          <input 
+            type="file" 
+            id="file" 
+            accept='image/*' 
+            className={styles.inputFile} 
+            onChange={handleFileChange} // Add this to handle file selection
+            multiple // Add this to allow selection of multiple files
+          />
+          <label className={styles.fileLabel} htmlFor="file"><FontAwesomeIcon icon={faPlus} /></label>
+          <input className={styles.inputText} type="text" placeholder='Send a message'></input>
+          <button className={styles.inputSubmit}><FontAwesomeIcon icon={faPaperPlane} /></button>
+        </div>
+
+
+        <div className={styles.showFiles}>
+            {fileNames.map((name, index) => (
+                <div className={styles.attachedFile} key={name + index} style={{ display: 'flex', alignItems: 'center' }}>
+                    <span className={styles.attachedFileName}>{name}</span>
+                    <button className={styles.deleteFile} onClick={() => handleDelete(index)} style={{ marginLeft: '10px' }}><FontAwesomeIcon icon={faXmark} /></button>
+                </div>
+            ))}
         <div className={styles.inputGroup}>
           <div>
             {/* <label for="files" class="btn">Select Image</label> */}
@@ -105,10 +114,10 @@ export default function Home() {
           />
 
         </div>
-        <button onClick={runAI}>Click Me</button>
+        <button onClick={run}>Click Me</button>
 
       </div>
-
+      </div>  
       <style jsx>{`
         main {
           padding: 5rem 0;
@@ -160,7 +169,5 @@ export default function Home() {
         }
       `}</style>
     </div>
-
-
   )
 }
