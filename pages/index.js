@@ -115,8 +115,9 @@ export default function Home() {
                   }
               }}
           />
-          <button className={styles.inputSubmit}><FontAwesomeIcon icon={faPaperPlane} /></button>
-
+          <button className={styles.inputSubmit} onClick={runAI}>
+              <FontAwesomeIcon icon={faPaperPlane} />
+          </button>
 
         <div className={styles.showFiles}>
             {fileNames.map((name, index) => (
