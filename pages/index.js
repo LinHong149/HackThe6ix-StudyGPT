@@ -1,6 +1,6 @@
 import styles from '../styles/Home.module.css';
 import { OpenAI } from "langchain/llms/openai";
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
@@ -11,7 +11,31 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 
-export const run = async () => {
+export default function Home() {
+  const [fileContent, setFileContent] = useState("");
+  const [userPrompt, setUserPrompt] = useState("");
+  // returns fileName with all the names of selected files
+  const [fileNames, setFileNames] = useState([]);
+
+  const handleDelete = (indexToRemove) => {
+    setFileNames(prevNames => prevNames.filter((_, index) => index !== indexToRemove));
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    const newNames = Array.from(event.target.files).map(file => file.name);
+    setFileNames(prevNames => [...prevNames, ...newNames]);
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const content = e.target.result;
+            setFileContent(content);  // Setting the content to state so that you can display it later
+        };
+        reader.readAsText(file);
+    }
+  }
+
+  const runAI = async () => {
     //Instantiante the OpenAI model 
     //Pass the "temperature" parameter which controls the RANDOMNESS of the model's output. A lower temperature will result in more predictable output, while a higher temperature will result in more random output. The temperature parameter is set between 0 and 1, with 0 being the most predictable and 1 being the most random
     const model = new OpenAI({ temperature: 0.9, openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
@@ -66,38 +90,17 @@ export const run = async () => {
 
 
       <div className={styles.bottomBg}>
-      <div className={styles.inputGroup}>
-          <input 
-            type="file" 
-            id="file" 
-            accept='image/*' 
-            className={styles.inputFile} 
-            onChange={handleFileChange} // Add this to handle file selection
-            multiple // Add this to allow selection of multiple files
-          />
-          <label className={styles.fileLabel} htmlFor="file"><FontAwesomeIcon icon={faPlus} /></label>
-          <input className={styles.inputText} type="text" placeholder='Send a message'></input>
-          <button className={styles.inputSubmit}><FontAwesomeIcon icon={faPaperPlane} /></button>
-        </div>
-
-
-        <div className={styles.showFiles}>
-            {fileNames.map((name, index) => (
-                <div className={styles.attachedFile} key={name + index} style={{ display: 'flex', alignItems: 'center' }}>
-                    <span className={styles.attachedFileName}>{name}</span>
-                    <button className={styles.deleteFile} onClick={() => handleDelete(index)} style={{ marginLeft: '10px' }}><FontAwesomeIcon icon={faXmark} /></button>
-                </div>
-            ))}
         <div className={styles.inputGroup}>
           <div>
             {/* <label for="files" class="btn">Select Image</label> */}
             <button className={styles.inputFile} onClick={() => document.getElementById('getFile').click()}></button>
+            <label className={styles.fileLabel} htmlFor="file"><FontAwesomeIcon icon={faPlus} /></label>
             <input 
-                className={styles.inputFileInput} 
-                id="getFile" 
-                type="file" 
-                style={{display: "none"}}
-                onChange={handleFileChange}
+              type="file" 
+              id="file" 
+              className={styles.inputFile} 
+              onChange={handleFileChange} // Add this to handle file selection
+              multiple // Add this to allow selection of multiple files
             />
           </div>
           <input 
@@ -112,9 +115,17 @@ export const run = async () => {
                   }
               }}
           />
+          <button className={styles.inputSubmit}><FontAwesomeIcon icon={faPaperPlane} /></button>
 
+
+        <div className={styles.showFiles}>
+            {fileNames.map((name, index) => (
+                <div className={styles.attachedFile} key={name + index} style={{ display: 'flex', alignItems: 'center' }}>
+                    <span className={styles.attachedFileName}>{name}</span>
+                    <button className={styles.deleteFile} onClick={() => handleDelete(index)} style={{ marginLeft: '10px' }}><FontAwesomeIcon icon={faXmark} /></button>
+                </div>
+            ))}
         </div>
-        <button onClick={run}>Click Me</button>
 
       </div>
       </div>  
