@@ -1,65 +1,69 @@
-import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 import { OpenAI } from "langchain/llms/openai";
 
+
 export default function Home() {
+  const UserOutput = () => {
+    return (
+      <div className={styles.OutputStyle}>
+        <div className={styles.userOutputAvatar}></div>
+        <div className={styles.userOutputText}>Lorem ipsum dolor sit amet consectetur. Est nunc facilisis commodo in viverra. Quisque ante sit fusce id purus. Mauris mauris sagittis neque vitae convallis aliquet dolor libero vitae. Convallis amet odio in aenean fames porttitor porttitor at. </div>
+      </div>
+    )
+  };
+
+  const GPTOutput = () => {
+    return (
+      <div className={styles.OutputStyle}>
+        <div className={styles.gptOutputAvatar}></div>
+        <div className={styles.gptOutputText}>Lorem ipsum dolor sit amet consectetur. Est nunc facilisis commodo in viverra. Quisque ante sit fusce id purus. Mauris mauris sagittis neque vitae convallis aliquet dolor libero vitae. Convallis amet odio in aenean fames porttitor porttitor at. </div>
+      </div>
+    )
+  };
+
   return (
     <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <div className={styles.output}>
+        <UserOutput/>
+        <GPTOutput/>
+        <UserOutput/>
+        <GPTOutput/>
+        <UserOutput/>
+        <GPTOutput/>
+        <UserOutput/>
+        <GPTOutput/>
+        <UserOutput/>
+        <GPTOutput/>
+      </div>
 
-      <main>
-        <h1 className={styles.title}>
-          sssssss to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
 
-        <p className={styles.description}>
-          Get started by editing <code>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+      <div className={styles.bottomBg}>
+        <div className={styles.inputGroup}>
+          <div>
+            {/* <label for="files" class="btn">Select Image</label> */}
+            <button className={styles.inputFile}  onclick="document.getElementById('getFile').click()"></button>
+            <input className={styles.inputFileInput} id="getFile" type="file" style="display:none"></input>
+          </div>
+          <input className={styles.inputText} type="text" placeholder='Send a message'></input>
         </div>
-      </main>
+      </div>
 
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel" className={styles.logo} />
-        </a>
-      </footer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       <style jsx>{`
         main {
