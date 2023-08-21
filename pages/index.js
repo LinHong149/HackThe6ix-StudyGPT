@@ -28,7 +28,7 @@ export default function Home() {
 
   const pressedSubmit = () => {
     clearAllFileNames();
-    runAI();
+    runAI(inputField); // Pass the current inputField value to runAI
   }
 
   const handleFileChange = (event) => {
